@@ -1,4 +1,4 @@
-# Random Walk State Machine
+# Random Walk Proof Machine
 ## Description
 This project implements a **random walk state machine** designed for mathematical analysis, specifically testing how the behavior of a random walk changes within different boundary shapes.
 
