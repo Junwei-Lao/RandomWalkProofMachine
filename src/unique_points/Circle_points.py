@@ -5,8 +5,8 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #initializing boundary
-radius = 30
-points_num = 40
+radius = 20
+points_num = 812
 
 
 #----------------------editable variables are above ↑ ---------------------------------------

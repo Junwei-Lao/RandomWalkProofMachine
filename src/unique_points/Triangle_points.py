@@ -5,7 +5,7 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #initializing boundary
-side_length = 100
+side_length = 6
 
 
 #----------------------editable variables are above ↑ ---------------------------------------

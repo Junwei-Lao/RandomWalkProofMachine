@@ -80,12 +80,12 @@ if __name__ == "__main__" :
     num_list_np = np.array(num_list)
     bins = np.arange(0, num_list_np.max() + bin_width, bin_width)
     mean = np.mean(num_list_np)
-    var = np.var(num_list_np)
+    std = np.std(num_list_np)
 
     #generate graph
     plt.hist(num_list_np, bins=bins, edgecolor='black', color='blue', alpha=0.7)
     plt.xlabel('Value Range')
     plt.ylabel('Frequency')
     plt.title(f"Random Walk Machine runs {times_running} times")
-    plt.figtext(0.5, 0.01, f"Mean: {mean:.2f}, Variance: {var:.2f}", ha="center", fontsize=11)
+    plt.figtext(0.5, 0.01, f"Mean: {mean:.2f}, Std: {std:.2f}", ha="center", fontsize=11)
     plt.show()

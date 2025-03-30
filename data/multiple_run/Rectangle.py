@@ -1,27 +1,8 @@
 import random
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull, Delaunay
 
-
-#the number of times the program will run
-times_running = 60
-
-#initializing boundary
-length = 50
-
-#histogram bin width
-bin_width = 500
-
-#----------------------editable variables are above ↑ ---------------------------------------
-width = length
-boundary = [(0,0), (0,width), (length, 0), (length, width)]
-boundary_np = np.array(boundary)
-boundary_hull = ConvexHull(boundary_np)
-boundary_delaunay = Delaunay(boundary_np[boundary_hull.vertices])
-
-
-def totalPoints():
+def totalPoints(length, width, boundary_delaunay):
     total = 0
     for i in range(int(length) + 1):
         for j in range(int(width) + 1):
@@ -31,8 +12,8 @@ def totalPoints():
                 total += 1
     return total
 
-#initializing variables
-def initialize():
+
+def initialize(length, width, boundary_delaunay):
     while (True):
         machine = (random.randint(0,int(length)), random.randint(0,int(width)))
         tester0 = np.array(machine)
@@ -40,10 +21,12 @@ def initialize():
         if (checker0):
             break # making sure the starting point of the machine is in the boundary
     path = [machine]
-    return (machine, 0, path)
+    return (machine, 1, path)
 
-directions = [(1,0),(-1,0),(0,1),(0,-1)]
-def RandomWalk (machine, walk_count):
+
+
+def RandomWalk (machine, walk_count, path, boundary_delaunay):
+    directions = [(1,0),(-1,0),(0,1),(0,-1)]
     tempo = []
     for dx, dy in directions:
         newx = machine[0] + dx
@@ -61,31 +44,36 @@ def RandomWalk (machine, walk_count):
         walk_count += 1
 
     path.append(machine)
-    return machine, walk_count
+    return machine, walk_count, path
 
-if __name__ == "__main__" :
-    
+def mainFunc(l, w):
+    times_running = 1000
+
+    #initializing shape boundary
+    length = l
+    width = w
+
+    boundary = [(0,0), (0,width), (length, 0), (length, width)]
+    boundary_np = np.array(boundary)
+    boundary_hull = ConvexHull(boundary_np)
+    boundary_delaunay = Delaunay(boundary_np[boundary_hull.vertices])
+
     num_list = []
-    totalpoint = totalPoints()
+    totalpoint = totalPoints(length, width, boundary_delaunay)
     for i in range(times_running):
-        machine, walk_count, path = initialize()
+        machine, walk_count, path = initialize(length, width, boundary_delaunay)
         while (True):
-            machine, walk_count = RandomWalk(machine, walk_count)
+            machine, walk_count, path = RandomWalk(machine, walk_count, path, boundary_delaunay)
 
             if (totalpoint // 2 == walk_count):
                 break
 
         num_list.append(len(path)-1)
         
-    #-------------------------------------------------outputs--------------------------------------------------
 
     #histogram initialize
     num_list_np = np.array(num_list)
-    bins = np.arange(0, num_list_np.max() + bin_width, bin_width)
+    mean = np.mean(num_list_np)
+    std = np.std(num_list_np)
 
-    #generate graph
-    plt.hist(num_list_np, bins=bins, edgecolor='black', color='blue', alpha=0.7)
-    plt.xlabel('Value Range')
-    plt.ylabel('Frequency')
-    plt.title(f"Random Walk Machine runs {times_running} times")
-    plt.show()
+    return mean, std

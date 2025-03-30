@@ -8,10 +8,10 @@ from scipy.spatial import ConvexHull, Delaunay
 times_running = 60
 
 #initializing boundary
-side_length = 100
+side_length = 53.871
 
 #histogram bin width
-bin_width = 500
+bin_width = 1000
 
 #----------------------editable variables are above ↑ ---------------------------------------
 top = np.sqrt(3) * (side_length/2)
@@ -82,11 +82,12 @@ if __name__ == "__main__" :
     bins = np.arange(0, num_list_np.max() + bin_width, bin_width)
     mean = np.mean(num_list_np)
     var = np.var(num_list_np)
+    std = np.std(num_list_np)
 
     #generate graph
     plt.hist(num_list_np, bins=bins, edgecolor='black', color='blue', alpha=0.7)
     plt.xlabel('Value Range')
     plt.ylabel('Frequency')
     plt.title(f"Random Walk Machine runs {times_running} times")
-    plt.figtext(0.5, 0.01, f"Mean: {mean:.2f}, Variance: {var:.2f}", ha="center", fontsize=11)
+    plt.figtext(0.5, 0.01, f"Mean: {mean:.3f}, Std: {std:.3f}", ha="center", fontsize=11)
     plt.show()
