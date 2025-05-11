@@ -5,10 +5,10 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #the number of times the program will run
-times_running = 60
+times_running = 260
 
 #initializing boundary
-side_length = 53.871
+side_length = 105.0483476
 
 #histogram bin width
 bin_width = 1000
@@ -74,6 +74,7 @@ if __name__ == "__main__" :
             machine, walk_count = RandomWalk(machine, walk_count)
 
         num_list.append(len(path)-1)
+        print(i)
         
     #-------------------------------------------------outputs--------------------------------------------------
 

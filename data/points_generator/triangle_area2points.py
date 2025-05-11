@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from scipy.spatial import ConvexHull, Delaunay
 
 side = []
 area = []
@@ -12,19 +11,23 @@ for m in range(10, 300):
 
     side_length = a*m
     top = b*m
-
-    boundary = [(0,0), (side_length, 0), (side_length/2, top)]
-    boundary_np = np.array(boundary)
-    boundary_hull = ConvexHull(boundary_np)
-    boundary_delaunay = Delaunay(boundary_np[boundary_hull.vertices])
+    top_double = top*2
 
     total = 0
+
     for i in range(int(side_length) + 1):
-        for j in range(int(top) + 1):
-            tester1 = np.array((i, j))
-            checker1 = boundary_delaunay.find_simplex(tester1) >= 0
-            if (checker1):
-                total += 1
+        inbound = True
+        for j in range(int(side_length) + 1):
+            if (i <= side_length/2 and inbound):
+                if (j <= np.sqrt(3) * i):
+                    total += 1
+                else:
+                    inbound = False
+            elif (i > side_length/2 and inbound):
+                if (j <= (-np.sqrt(3) * i) + top_double):
+                    total += 1
+                else:
+                    inbound = False
             else:
                 break
 

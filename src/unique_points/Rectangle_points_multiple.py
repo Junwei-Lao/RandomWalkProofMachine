@@ -3,16 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull, Delaunay
 
-
 #the number of times the program will run
-times_running = 60
+times_running = 200
 
 #initializing shape boundary
-length = 50
-width = 40
+length = 107.4493
+width = 35.81643
 
 #histogram bin width
-bin_width = 500
+bin_width = 1000
 
 #----------------------editable variables are above ↑ ---------------------------------------
 boundary = [(0,0), (0,width), (length, 0), (length, width)]
@@ -53,7 +52,7 @@ def RandomWalk (machine, walk_count):
         #check if the next step is in the boundary
         checker = boundary_delaunay.find_simplex(tester) >= 0
 
-        if (checker[0]):
+        if (newx >=0 and newx <= length and newy >= 0 and newy <= width):
             tempo.append((newx,newy))
 
     machine = random.choice(tempo)
@@ -73,6 +72,7 @@ if __name__ == "__main__" :
             machine, walk_count = RandomWalk(machine, walk_count)
 
         num_list.append(len(path)-1)
+        print(i)
         
     #-------------------------------------------------outputs--------------------------------------------------
 

@@ -5,17 +5,17 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #the number of times the program will run
-times_running = 260
+times_running = 100
 
-#initializing boundary
-length = 40.76643857
+length = 20
+hypo_side = 4*length
 
-#histogram bin width
 bin_width = 500
 
 #----------------------editable variables are above ↑ ---------------------------------------
-width = length
-boundary = [(0,0), (0,width), (length, 0), (length, width)]
+long = 2*hypo_side+length
+boundary = [(0,0), (hypo_side,hypo_side), (hypo_side+length, hypo_side), (long, 0)]
+
 boundary_np = np.array(boundary)
 boundary_hull = ConvexHull(boundary_np)
 boundary_delaunay = Delaunay(boundary_np[boundary_hull.vertices])
@@ -23,8 +23,8 @@ boundary_delaunay = Delaunay(boundary_np[boundary_hull.vertices])
 
 def totalPoints():
     total = 0
-    for i in range(int(length) + 1):
-        for j in range(int(width) + 1):
+    for i in range(int(long) + 1):
+        for j in range(int(hypo_side) + 1):
             tester1 = np.array((i, j))
             checker1 = boundary_delaunay.find_simplex(tester1) >= 0
             if (checker1):
@@ -34,7 +34,7 @@ def totalPoints():
 #initializing variables
 def initialize():
     while (True):
-        machine = (random.randint(0,int(length)), random.randint(0,int(width)))
+        machine = (random.randint(0,int(long)), random.randint(0,int(hypo_side)))
         tester0 = np.array(machine)
         checker0 = boundary_delaunay.find_simplex(tester0) >= 0
         if (checker0):

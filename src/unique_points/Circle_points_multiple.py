@@ -5,11 +5,11 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #the number of times the program will run
-times_running = 60
+times_running = 250
 
 #initializing boundary
-radius = 15
-points_num = 812           # the number of vertices for approximation
+radius = 70
+points_num = 8120           # the number of vertices for approximation
 
 #histogram bin width
 bin_width = 1000
@@ -85,6 +85,7 @@ if __name__ == "__main__" :
                 break
 
         num_list.append(len(path)-1)
+        print(i)
         
     #-------------------------------------------------outputs--------------------------------------------------
 
@@ -102,3 +103,5 @@ if __name__ == "__main__" :
     plt.title(f"Random Walk Machine runs {times_running} times")
     plt.figtext(0.5, 0.01, f"Mean: {mean:.3f}, Std: {std:.3f}", ha="center", fontsize=11)
     plt.show()
+
+    print("Total points: ", totalpoint)
