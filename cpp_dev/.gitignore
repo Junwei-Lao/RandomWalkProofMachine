@@ -14,6 +14,7 @@ double_bowtie/db3
 double_bowtie/test.py
 double_bowtie/test2.py
 double_bowtie/test3.py
+double_bowtie/walks
 
 bowtie_multiple/readme
 bowtie_multiple/test_shape.py

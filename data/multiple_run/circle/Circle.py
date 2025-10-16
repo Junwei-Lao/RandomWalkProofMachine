@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import os
 
 '''
 def totalPoints(radius, boundary_delaunay):
@@ -13,6 +14,13 @@ def totalPoints(radius, boundary_delaunay):
     return total
 '''
 directions = [(1,0),(-1,0),(0,1),(0,-1)]
+
+
+path = []
+unique_visit = set(path)
+walk_count = 0
+
+
 
 def initialize(radius):
     while (True):
@@ -41,6 +49,8 @@ def RandomWalk (machine, walk_count, path, unique_visit, radius):
     return machine, walk_count, path, unique_visit
 
 def mainFunc(r, totalpoints):
+    #global walk_count, path, unique_visit
+
     #times_running = 1
     radius = r
 
@@ -49,16 +59,25 @@ def mainFunc(r, totalpoints):
 
     #for i in range(times_running):
 
-    machine, walk_count, path = initialize(radius)
-    unique_visit = set(path)
+    machine, walk_count, path_ = initialize(radius)
+    unique_visit = set(path_)
 
-    while (True):
-        machine, walk_count, path, unique_visit = RandomWalk(machine, walk_count, path, unique_visit, r)
-        if (totalpoint // 2 == walk_count):
-            break
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    txt_path = os.path.join(base_dir, "output.txt")
+    with open(txt_path, "w") as f:
+        f.write(f"{radius} \n")
+        f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+        while (True):
+            machine, walk_count, path_, unique_visit = RandomWalk(machine, walk_count, path_, unique_visit, r)
+            f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+            if (totalpoint // 2 == walk_count):
+                break
 
-    #num_list.append(len(path)-1)
-    return len(path)-1
+
+
+
+if __name__ == "__main__":
+    mainFunc(54,9145)
         
         
 

@@ -33,15 +33,22 @@ for m in range(10, 300):
 
 
     Area = 45 * width**2
-    w.append(width)
-    l.append(length)
-    hypo.append(hypo_side)
+    w.append(width.item())
+    l.append(length.item())
+    hypo.append(hypo_side.item())
 
-    area.append(Area)
+    #area.append(Area)
     points.append(total)
     print(m)
 
-
+print(hypo)
+print('\n')
+print(w)
+print('\n')
+print(l)
+print('\n')
+print(points)
+'''
 df = pd.DataFrame({
     'Width': w,
     'Length': l,
@@ -52,3 +59,4 @@ df = pd.DataFrame({
 
 # Save to CSV
 df.to_csv('bowtie_result.csv', index=False)
+'''

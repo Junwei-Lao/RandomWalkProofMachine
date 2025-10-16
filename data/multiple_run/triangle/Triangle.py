@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import os
 
 directions = [(1,0),(-1,0),(0,1),(0,-1)]
 
@@ -42,15 +43,21 @@ def mainFunc(s, totalpoint):
     side_length = s
     top = np.sqrt(3) * (side_length/2)
 
-    machine, walk_count, path = initialize(side_length, top)
+    machine, walk_count, path_ = initialize(side_length, top)
     
-    unique_visit = set(path)
+    unique_visit = set(path_)
 
-    while (True):
-        machine, walk_count, path, unique_visit = RandomWalk(machine, walk_count, path, side_length, top, unique_visit)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    txt_path = os.path.join(base_dir, "output_tri.txt")
+    with open(txt_path, "w") as f:
+        f.write(f"{side_length} \n {top} \n")
+        f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+        while (True):
+            machine, walk_count, path_, unique_visit = RandomWalk(machine, walk_count, path_, side_length, top, unique_visit)
+            f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+            if (totalpoint // 2 == walk_count):
+                break
 
-        if (totalpoint // 2 == walk_count):
-            break
-        
 
-    return len(path)-1
+if __name__ == "__main__":
+    mainFunc(145.4515582,9233)

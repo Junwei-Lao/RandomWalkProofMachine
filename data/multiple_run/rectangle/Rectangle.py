@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import os
 
 
 directions = [(1,0),(-1,0),(0,1),(0,-1)]
@@ -35,15 +36,22 @@ def mainFunc(l, w, totalpoint):
     length = l
     width = w
 
-    machine, walk_count, path = initialize(length, width)
+    machine, walk_count, path_ = initialize(length, width)
     
-    unique_visit = set(path)
+    unique_visit = set(path_)
 
-    while (True):
-        machine, walk_count, path, unique_visit = RandomWalk(machine, walk_count, path, length, width, unique_visit)
-
-        if (totalpoint // 2 == walk_count):
-            break
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    txt_path = os.path.join(base_dir, "output.txt")
+    with open(txt_path, "w") as f:
+        f.write(f"{length} {width} \n")
+        f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+        while (True):
+            machine, walk_count, path_, unique_visit = RandomWalk(machine, walk_count, path_, length, width, unique_visit)
+            f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+            if (totalpoint // 2 == walk_count):
+                break
         
 
-    return len(path)-1
+
+if __name__ == "__main__":
+    mainFunc(165.7789267,55.25964223,9296)

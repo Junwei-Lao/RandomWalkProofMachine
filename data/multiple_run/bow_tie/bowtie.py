@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import os
 
 directions = [(1,0),(-1,0),(0,1),(0,-1)]
 
@@ -57,11 +58,22 @@ def mainFunc(w, l, hypo,totalpoints):
 
     totalpoint = totalpoints
 
-    machine, walk_count, path = initialize(hypo_side, length, width)
-    unique_visit = set(path)
-
-    while (totalpoint // 2 != walk_count):
-        machine, walk_count, path, unique_visit = RandomWalk(machine, walk_count, path, unique_visit, hypo_side, length, width)
-        
+    machine, walk_count, path_ = initialize(hypo_side, length, width)
     
-    return len(path)-1
+    unique_visit = set(path_)
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    txt_path = os.path.join(base_dir, "output_bowtie.txt")
+    with open(txt_path, "w") as f:
+        f.write(f"{width} \n {length} \n {hypo_side} \n")
+        f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+        while (True):
+            machine, walk_count, path_, unique_visit = RandomWalk(machine, walk_count, path_, unique_visit, hypo_side, length, width)
+            f.write(f"{machine[0]} {machine[1]} {len(path_)} {len(unique_visit)}\n")
+            if (totalpoint // 2 == walk_count):
+                break
+        
+
+
+if __name__ == "__main__":
+    mainFunc(14.26797827,71.33989136, 57.07191309 ,9217) #		

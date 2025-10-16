@@ -5,11 +5,12 @@ from scipy.spatial import ConvexHull, Delaunay
 
 
 #initializing boundary
-length = 50
-width = 10
+length = 155.8908737
+width = 31.17817474
 
-hypo_side = 40
+hypo_side = 124.712699
 
+#gate = 0.3*width + hypo_side
 
 #----------------------editable variables are above ↑ ---------------------------------------
 height = 2*hypo_side + width
