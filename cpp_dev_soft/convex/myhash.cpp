@@ -1,47 +1,34 @@
-#include <iostream>
+#include "myhash.h"
 #include <cstdint>
 
-struct tuple{
-    int x;
-    int y;
-    
-    tuple(int xInput, int yInput) {
-        this->x = xInput;
-        this->y = yInput;
-    }
-};
+mytuple::mytuple(int xInput, int yInput) {
+    x = xInput;
+    y = yInput;
+}
 
-struct node{
-    int x;
-    int y;
-    node* nextNode;
+node::node(int xInput, int yInput) {
+    x = xInput;
+    y = yInput;
+    nextNode = nullptr;
+}
 
-    node(int xInput, int yInput) {
-        this->x = xInput;
-        this->y = yInput;
-        this->nextNode = nullptr;
-    }
-
-    node(tuple t) {
-        this->x = t.x;
-        this->y = t.y;
-        this->nextNode = nullptr;
-    }
-
-};
+node::node(mytuple t) {
+    x = t.x;
+    y = t.y;
+    nextNode = nullptr;
+}
 
 bool comparator(node* first, node* second) {
     return (first->x == second->x && first->y == second->y);
 }
 
-
-int hashCode (tuple first, int HashSize) {  //new hash function
-    uint64_t hx = (uint64_t)(uint32_t)first.x;
-    uint64_t hy = (uint64_t)(uint32_t)first.y;
+int hashCode(mytuple first, int HashSize) {
+    uint64_t hx = static_cast<uint64_t>(static_cast<uint32_t>(first.x));
+    uint64_t hy = static_cast<uint64_t>(static_cast<uint32_t>(first.y));
     return (hx << 32 | hy) % HashSize;
 }
 
-bool Find_And_Insert_Node(node** hashmap, tuple t, int HashSize) {
+bool Find_And_Insert_Node(node** hashmap, mytuple t, int HashSize) {
     int code = hashCode(t, HashSize);
     if (hashmap[code] == nullptr) {
         hashmap[code] = new node(t);
@@ -52,13 +39,12 @@ bool Find_And_Insert_Node(node** hashmap, tuple t, int HashSize) {
 
         while (true) {
             if (comparator(tempoNode, newNode)) {
-                delete newNode; 
+                delete newNode;
                 return false;
             }
-
-            if (tempoNode->nextNode != nullptr) {
+            if (tempoNode->nextNode != nullptr)
                 tempoNode = tempoNode->nextNode;
-            } else {
+            else {
                 tempoNode->nextNode = newNode;
                 return true;
             }

@@ -29,3 +29,7 @@ overall_mean.csv
 
 /data/multiple_run/trapezoid/trapezoid.csv
 /data/multiple_run/trapezoid/trapezoid_results.csv
+
+/cpp_dev_soft/convex/tester
+/cpp_dev_soft/convex/.vscode
+/cpp_dev_soft/test_convexshape.cpp
