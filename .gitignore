@@ -3,6 +3,8 @@ readme
 overall_mean.csv
 /data/overall.csv
 
+points.txt
+
 /data/multiple_run/__pycache__
 
 /data/multiple_run/circle/Circle.csv
@@ -30,9 +32,8 @@ overall_mean.csv
 /data/multiple_run/trapezoid/trapezoid.csv
 /data/multiple_run/trapezoid/trapezoid_results.csv
 
-/cpp_dev_soft/convex/tester
-/cpp_dev_soft/convex/.vscode
-/cpp_dev_soft/convex/*.txt
-/cpp_dev_soft/convex/*.csv
-/cpp_dev_soft/test_convexshape.cpp
+/cpp_dev_soft/.vscode
+
+/cpp_dev_soft/data
+/cpp_dev_soft/src/convex/*.txt
 
