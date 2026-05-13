@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <iomanip>
+#include <cmath>
 
 //------------------------------------------------------------structure------------------------------------------------------------------------//
 struct tuple{
@@ -116,7 +117,7 @@ int main() {
     std::mt19937 gen(rd());
 
 
-    for (int element = 0; element < 300; element++) {
+    for (int element = 0; element < 1; element++) {
 
         std::fill(valueList, valueList + sample_size, 0);
         std::fill(gateValueListLeft, gateValueListLeft + sample_size, 0);
@@ -422,51 +423,26 @@ int main() {
 
         // ----------------------------------------------------------Overall output-------------------------------------------------//
         double sumMean = 0;
-        //double sumGateMean = 0;
-        double sumGateLeftMean = 0;
-        double sumGateLeftMean2 = 0;
-        double sumGateLeftMean3 = 0;
-
-        double sumGateRightMean = 0;
-        double sumGateRightMean2 = 0;
-        double sumGateRightMean3 = 0;
 
         for (int i = 0; i < sample_size; i++) {
             sumMean += valueList[i];
-            //sumGateMean += overallGateList[i];
-        }
-        for (int i = 0; i < gateCrossFromLeft; i++) {
-            sumGateLeftMean += gateValueListLeft[i];
-            sumGateLeftMean2 += gateValueListLeft2[i];
-            sumGateLeftMean3 += gateValueListLeft3[i];
-        }
-        for (int i = 0; i < gateCrossFromRight; i++) {
-            sumGateRightMean += gateValueListRight[i];
-            sumGateRightMean2 += gateValueListRight2[i];
-            sumGateRightMean3 += gateValueListRight3[i];
         }
         
+        double mean = sumMean / sample_size;
+        
+        // Calculate standard deviation
+        double sumSquaredDiff = 0;
+        for (int i = 0; i < sample_size; i++) {
+            double diff = valueList[i] - mean;
+            sumSquaredDiff += diff * diff;
+        }
+        double stdDev = std::sqrt(sumSquaredDiff / sample_size);
         
         std::cout << "\rSample number: " << element  << "                                     " << std::flush;
         std::cout << std::endl;
-        
-        /*
-        std::cout << std::endl;
-        //std::cout << "Average gate crossed count: " << sumGateMean / sample_size << std::endl;
 
-        std::cout << "Average gate crossed count while left trapozoid dominate: " << sumGateLeftMean / gateCrossFromLeft << std::endl;
-        std::cout << "Average gate crossed count while left trapozoid dominate (gate 2): " << sumGateLeftMean2 / gateCrossFromLeft << std::endl;
-        std::cout << "Average gate crossed count while left trapozoid dominate (gate 3): " << sumGateLeftMean3 / gateCrossFromLeft << std::endl;
-
-        std::cout << std::endl;
-
-        std::cout << "Average gate crossed count while right trapozoid dominate: " << sumGateRightMean / gateCrossFromRight << std::endl;
-        std::cout << "Average gate crossed count while right trapozoid dominate (gate 2): " << sumGateRightMean2 / gateCrossFromRight << std::endl;
-        std::cout << "Average gate crossed count while right trapozoid dominate (gate 3): " << sumGateRightMean3 / gateCrossFromRight << std::endl;
-        */
-
-        // Average walk time, gate1 count (Left), gate2 count (Left), gate3 count (Left), gate1 count (Right), gate2 count (Right), gate3 count (Right)
-        std::cout << std::fixed << std::setprecision(6) << sumMean / sample_size << ',' <<sumGateLeftMean / gateCrossFromLeft << ',' << sumGateLeftMean2 / gateCrossFromLeft << ',' << sumGateLeftMean3 / gateCrossFromLeft << ',' << sumGateRightMean / gateCrossFromRight << ',' << sumGateRightMean2 / gateCrossFromRight << ',' << sumGateRightMean3 / gateCrossFromRight << std::endl;
+        // Output mean and standard deviation of total walk time
+        std::cout << std::fixed << std::setprecision(6) << mean << ',' << stdDev << std::endl;
 
     }
     

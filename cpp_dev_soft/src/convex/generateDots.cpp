@@ -6,11 +6,68 @@
 #include <string>
 #include <sstream>
 
-
 #include "util.h"
 
 int main(int argc, char *argv[])
 {
+    if (argc < 4)
+    {
+        std::cerr << "Usage: " << argv[0] << " DISTANCE_POWER initemperature finaltemperature [index]\n";
+        return 1;
+    }
+
+    DISTANCE_POWER = std::atof(argv[1]);
+    initemperature = std::atof(argv[2]);
+    if (initemperature == 0.0)
+    {
+        initemperature = 1e-6;
+    }
+    finaltemperature = std::atof(argv[3]);
+    if (finaltemperature == 0.0)
+    {
+        finaltemperature = 1e-6;
+    }
+
+    // optional index argument (size parameter), default to 10
+    int index = 130;
+
+    bool **_mask = nullptr;
+
+    int xMax, yMax;
+
+    int points = getPointsInShape(index, SNOWFLAKE, &_mask, &xMax, &yMax);
+
+    std::ostringstream fname;
+    fname << "mask_points_" << index << ".txt";
+    std::ofstream out(fname.str());
+    if (!out)
+    {
+        std::cerr << "Failed to open output file: " << fname.str() << "\n";
+        return 1;
+    }
+
+    try
+    {
+        for (int x = 0; x < xMax; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                if (_mask[x][y])
+                {
+                    out << x << " " << y << "\n";
+                }
+            }
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << "In generateDots traverse" << '\n';
+    }
+
+    out.close();
+    std::cout << "Wrote mask points to " << fname.str() << " (index=" << index << ")\n";
+
+    /*
     // minimal arg parsing, keep existing three args for compatibility
     if (argc < 4)
     {
@@ -35,7 +92,7 @@ int main(int argc, char *argv[])
 
     // Compute bounding extents for HEXAGON (same formulas as util.cpp)
     double xLength, yLength;
-    
+
     double _constant = std::sqrt(PI / (5*std::sin(36*PI / 180)));
     double longside = 2 * _constant * index * std::cos(18 * PI / 180);
 
@@ -73,5 +130,7 @@ int main(int argc, char *argv[])
 
     out.close();
     std::cout << "Wrote sharptriangle points to " << fname.str() << " (index=" << index << ")\n";
+
+    */
     return 0;
 }

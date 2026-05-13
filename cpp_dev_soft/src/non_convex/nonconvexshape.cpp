@@ -16,8 +16,8 @@
 #include <thread>
 
 // Softmax temperature (must be positive). Use double to avoid integer truncation.
-double initemperature = 5.0;
-double finaltemperature = 1.0;
+double initemperature = 2.0;
+double finaltemperature = 0.05;
 
 const std::vector<mytuple> fourdirs = {mytuple(0, 1), mytuple(1, 0), mytuple(0, -1), mytuple(-1, 0)};
 const double PI = std::acos(-1);
@@ -293,7 +293,7 @@ mytuple getNextPosition(mytuple position, int pointOUT, int index, ShapeType sha
     std::vector<double> weights;
     std::vector<short> distances;
     bool isAllInBoundary = true;
-    double temperature = initemperature + (finaltemperature - initemperature) * std::exp (-0.05*static_cast<double>(pointOUT));
+    double temperature = finaltemperature + (initemperature - finaltemperature) * std::exp (-0.05*static_cast<double>(pointOUT));
 
     for (Direction dirIndex = UP; dirIndex <= LEFT; dirIndex = static_cast<Direction>(dirIndex + 1))
     {
@@ -333,8 +333,11 @@ mytuple getNextPosition(mytuple position, int pointOUT, int index, ShapeType sha
         for (short dist : distances)
         {
             double w = std::exp(-1*std::pow(static_cast<double>(dist), DISTANCE_POWER) / temperature);
+            //std::cout << std::setprecision(4) << " Distance " << std::pow(static_cast<double>(dist), DISTANCE_POWER) << " Weight: " << w;
             weights.push_back(w);
         }
+        //std::cout << std::endl;
+
         std::discrete_distribution<size_t> dist(weights.begin(), weights.end());
         size_t chosenIndex = dist(ctx.rng);
         mytuple dir = fourdirs[chosenIndex];
@@ -489,7 +492,7 @@ int main(int argc, char *argv[])
             break;
         }
 
-        for (int index = 10; index <= 75; index++)
+        for (int index = 20; index <= 70; index++)
         {
             std::string filename = "walk_results_" + shapeName + ".csv";
             std::string distributionName = "distribution_" + shapeName + "_" + std::to_string(index) + ".csv";

@@ -17,7 +17,6 @@
 #include <string>
 
 #include "util.h"
-#include "cover.h"
 
 int main(int argc, char *argv[])
 {
@@ -37,11 +36,10 @@ int main(int argc, char *argv[])
 
     std::cout << "Starting shape analysis..." << std::endl;
 
-    const std::vector<ShapeType> shapes = {SQUARE}; // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    const std::vector<ShapeType> shapes = {SPHERE, OCTAHEDRON, CUBE, RECTANGULAR_PRISM_1_2_3, CYLINDER}; // HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
     const unsigned num_runs = 1000;
 
     std::vector<int> results;
-    std::vector<std::size_t> cover_results;
     WalkContext mainCtx;
 
     std::random_device rd;
@@ -72,72 +70,27 @@ int main(int argc, char *argv[])
         std::string shapeName;
         switch (shape)
         {
-        case CIRCLE:
-            shapeName = "Circle";
-            break;
-        case RECTANGLE:
-            shapeName = "Rectangle";
-            break;
-        case RECTANGLE_4_1:
-            shapeName = "Rectangle_4_1";
-            break;
-        case SQUARE:
-            shapeName = "Square";
-            break;
-        case TRIANGLE:
-            shapeName = "Triangle";
-            break;
-        case SHARP_TRIANGLE:
-            shapeName = "Sharp_Triangle";
-            break;
-        case FLAT_TRIANGLE:
-            shapeName = "Flat_Triangle";
-            break;
-        case TRAPEZOID:
-            shapeName = "Trapezoid";
-            break;
-        case HEXAGON:
-            shapeName = "Hexagon";
-            break;
-        case POLYGON8:
-            shapeName = "Polygon8";
-            break;
-        case POLYGON10:
-            shapeName = "Polygon10";
-            break;
-        case POLYGON12:
-            shapeName = "Polygon12";
-            break;
-        case POLYGON5:
-            shapeName = "Polygon5";
-            break;
-        case POLYGON9:
-            shapeName = "Polygon9";
-            break;
-        case POLYGON15:
-            shapeName = "Polygon15";
-            break;
-        case ROTATED_SQUARE:
-            shapeName = "Rotated_Square";
-            break;
-        case STRETCHED_ROTATED_SQUARE:
-            shapeName = "Stretched_Rotated_Square";
-            break;
-        case BOWTIE:
-            shapeName = "Bowtie";
-            break;
-        case DOUBLE_BOWTIE:
-            shapeName = "Double_Bowtie";
-            break;
-        case SLOTTED_RECT_30x10:
-            shapeName = "Slotted_Rect_30x10";
-            break;
-
-        case V_NOTCH_RECT:
-            shapeName = "V_Notch_Rect";
-            break;
+            case SPHERE:
+                shapeName = "SPHERE";
+                break;
+            case OCTAHEDRON:
+                shapeName = "OCTAHEDRON";
+                break;
+            case CUBE:
+                shapeName = "CUBE";
+                break;
+            case RECTANGULAR_PRISM_1_2_3:
+                shapeName = "RECTANGULAR_PRISM_1_2_3";
+                break;
+            case CYLINDER:
+                shapeName = "CYLINDER";
+                break;
+            case PYRAMID:
+                shapeName = "PYRAMID";
+                break;
         }
-        for (int index = 100; index <= 100; index++)
+
+        for (int index = 20; index <= 70; index++)
         {
             std::string filename = "example_walk_results_" + shapeName + '_' + std::to_string(DISTANCE_POWER) + '_' + std::to_string(initemperature) + '_' + std::to_string(finaltemperature) + '_' + ".csv";
             std::string distributionName = "distribution_" + shapeName + "_" + std::to_string(index) + ".csv";
@@ -147,15 +100,16 @@ int main(int argc, char *argv[])
                 continue;
             }
 
+            double index1 = 0.5*static_cast<double>(index); 
+
             // Preallocate results array
             results.assign(num_runs, 0);
-            cover_results.assign(num_runs, 0);
 
             // pick a random run to record a path (use mainCtx)
             std::uniform_int_distribution<unsigned> runDist(0, num_runs - 1);
             unsigned target_run = runDist(mainCtx.rng);
 
-            std::vector<mytuple> chosen_path;
+            std::vector<mytuple_3d> chosen_path;
             std::mutex chosen_path_mutex;
 
             // Launch workers
@@ -178,8 +132,8 @@ int main(int argc, char *argv[])
                                              int res;
                                              if (runIndex == target_run)
                                              {
-                                                std::vector<mytuple> local_path;
-                                                res = walk(index, shape, local_ctx, &local_path);
+                                                std::vector<mytuple_3d> local_path;
+                                                res = walk(index1, shape, local_ctx, &local_path);
                                                 if (!local_path.empty())
                                                 {
                                                     std::lock_guard<std::mutex> lock(chosen_path_mutex);
@@ -189,11 +143,11 @@ int main(int argc, char *argv[])
                                              }
                                              else
                                              {
-                                                res = walk(index, shape, local_ctx, nullptr);
+                                                res = walk(index1, shape, local_ctx, nullptr);
                                              }
                                              results[runIndex] = res;
                                             // record cover disk count reported by walk()
-                                            cover_results[runIndex] = local_ctx.last_cover_count;
+                                            // cover_results[runIndex] = local_ctx.last_cover_count;
                                          } });
             }
 
@@ -203,81 +157,54 @@ int main(int argc, char *argv[])
             std::ofstream distFile(distributionName);
             if (!distFile.tellp())
             {
-                distFile << "Steps,Cover\n";
+                distFile << "Steps\n";
             }
 
             // Compute mean and stddev from results and cover_results vectors
             double sum = 0.0;
-            double cover_sum = 0.0;
+            // double cover_sum = 0.0;
             for (unsigned i = 0; i < num_runs; ++i)
             {
-                distFile << results[i] << "," << cover_results[i] << "\n";
+                distFile << results[i] << "\n";
                 sum += static_cast<double>(results[i]);
-                cover_sum += static_cast<double>(cover_results[i]);
+                // cover_sum += static_cast<double>(cover_results[i]);
             }
             double mean = sum / static_cast<double>(num_runs);
-            double cover_mean = cover_sum / static_cast<double>(num_runs);
+            //double cover_mean = cover_sum / static_cast<double>(num_runs);
             distFile.close();
 
             double sq_sum = 0.0;
-            double cover_sq_sum = 0.0;
+            //double cover_sq_sum = 0.0;
             for (unsigned i = 0; i < num_runs; ++i)
             {
                 double d = static_cast<double>(results[i]) - mean;
                 sq_sum += d * d;
-                double cd = static_cast<double>(cover_results[i]) - cover_mean;
-                cover_sq_sum += cd * cd;
+                //double cd = static_cast<double>(cover_results[i]) - cover_mean;
+                //cover_sq_sum += cd * cd;
             }
             double std_dev = std::sqrt(sq_sum / static_cast<double>(num_runs));
-            double cover_std_dev = std::sqrt(cover_sq_sum / static_cast<double>(num_runs));
+            //double cover_std_dev = std::sqrt(cover_sq_sum / static_cast<double>(num_runs));
 
             // Write CSV
             std::ofstream outFile(filename, std::ios::app);
             if (!outFile.tellp())
             {
-                outFile << "Index,Mean,StdDev,CoverMean,CoverStdDev\n";
+                outFile << "Index,Mean,StdDev\n";
             }
-            outFile << std::fixed << std::setprecision(6) << index << "," << mean << "," << std_dev << "," << cover_mean << "," << cover_std_dev << "\n";
+            outFile << std::fixed << std::setprecision(6) << index1 << "," << mean << "," << std_dev << "\n";
             outFile.close();
 
             // Write chosen path if recorded
             if (!chosen_path.empty())
             {
                 std::ostringstream pfn;
-                pfn << "path_" << shapeName << "_" << index << ".txt";
+                pfn << "path_" << shapeName << "_" << index1 << ".txt";
                 std::ofstream pfile(pfn.str());
                 if (pfile)
                 {
-                    // set headers
-                    if (shape == CIRCLE)
-                    {
-                        pfile << 1 << "\n";
-                        pfile << index << "\n";
-                        pfile << index << "\n";
-                    }
-                    else
-                    {
-                        pfile << 0 << "\n";
-                        if (shape == RECTANGLE)
-                        {
-                            pfile << 0 << " " << 0 << " " << 3 * std::sqrt(PI / 3) * index << " " << 3 * std::sqrt(PI / 3) * index << " " << 0 << "\n";
-                            pfile << 0 << " " << std::sqrt(PI / 3) * index << " " << std::sqrt(PI / 3) * index << " " << 0 << " " << 0 << "\n";
-                        }
-                        else if (shape == RECTANGLE_4_1)
-                        {
-                            pfile << 0 << " " << 0 << " " << 4 * std::sqrt(PI / 4) * index << " " << 4 * std::sqrt(PI / 4) * index << " " << 0 << "\n";
-                            pfile << 0 << " " << std::sqrt(PI / 4) * index << " " << std::sqrt(PI / 4) * index << " " << 0 << " " << 0 << "\n";
-                        }
-                        else if (shape == SQUARE)
-                        {
-                            pfile << 0 << " " << 0 << " " << std::sqrt(PI) * index << " " << std::sqrt(PI) * index << " " << 0 << "\n";
-                            pfile << 0 << " " << std::sqrt(PI) * index << " " << std::sqrt(PI) * index << " " << 0 << " " << 0 << "\n";
-                        }
-                    }
-
                     // Write path points
                     for (const auto &pt : chosen_path)
-                        pfile << pt.x << " " << pt.y << "\n";
+                        pfile << pt.x << " " << pt.y << " " << pt.z << "\n";
                 }
                 else
                 {
@@ -285,7 +212,7 @@ int main(int argc, char *argv[])
                 }
             }
 
-            std::cout << "Completed index " << index << " with mean: " << mean
+            std::cout << "Completed index " << index1 << " with mean: " << mean
                       << ", std_dev: " << std_dev << std::endl;
 
             // Cleanup

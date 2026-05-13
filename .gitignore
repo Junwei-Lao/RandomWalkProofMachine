@@ -3,6 +3,7 @@ readme
 overall_mean.csv
 /data/overall.csv
 
+.vscode
 points.txt
 
 /data/multiple_run/__pycache__
@@ -33,7 +34,8 @@ points.txt
 /data/multiple_run/trapezoid/trapezoid_results.csv
 
 /cpp_dev_soft/.vscode
-
+/cpp_dev_soft/archived
 /cpp_dev_soft/data
 /cpp_dev_soft/src/convex/*.txt
+
 
